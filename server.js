@@ -1,43 +1,16 @@
-// Create express app
 import express from "express";
 import db from "./database.js";
 import md5 from "md5";
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import cors from 'cors'
-import https from 'https';
 
-// import { createProxyMiddleware } from 'http-proxy-middleware';
 dotenv.config();
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors())
-// app.use('/api', (req, res) => {
-//   const proxy = https.request('https://daintree-server-production.up.railway.app/', {
-//     ...req,
-//     headers: {
-//       ...req.headers,
-//       host: 'https://daintree-server-production.up.railway.app/'
-//     }
-//   }, (response) => {
-//     res.setHeader('Access-Control-Allow-Origin', 'https://daintree-production.up.railway.app/');
-//     response.pipe(res);
-//   });
-//   req.pipe(proxy);
-// });
-
-// app.use('/api', createProxyMiddleware({
-//   target: 'https://daintree-production.up.railway.app',
-//   changeOrigin: true,
-// }));
-// app.use(function (_, res, next) {
-//   res.header("Access-Control-Allow-Origin", `${process.env.FRONT_URL}`);
-//   res.header("Access-Control-Allow-Methods", "POST, GET, DELETE, PATCH");
-//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   next();
-// });
 
 app.listen(process.env.HTTP_PORT, () => {
   console.log("Server running on port %PORT%".replace("%PORT%", process.env.HTTP_PORT));
@@ -52,7 +25,7 @@ app.get("/api/user", (req, res, next) => {
   const params = [];
   db.all(sql, params, (err, rows) => {
     if (err) {
-      res.status(400).send('wtf');
+      res.status(400).send({error: err.message});
       return;
     }
     res.json({
