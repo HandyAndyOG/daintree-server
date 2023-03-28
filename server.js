@@ -43,8 +43,8 @@ app.listen(process.env.HTTP_PORT, () => {
   console.log("Server running on port %PORT%".replace("%PORT%", process.env.HTTP_PORT));
 });
 
-app.get("/", (req, res, next) => {
-  res.send({ message: "Ok" });
+app.get("/api", (req, res, next) => {
+  res.status(200).send('Server running');
 });
 
 app.get("/api/user", (req, res, next) => {
@@ -449,6 +449,3 @@ app.delete("/api/store/:id", (req, res, next) => {
   );
 });
 
-app.use(function (req, res) {
-  res.status(404);
-});
