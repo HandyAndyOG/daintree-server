@@ -48,7 +48,6 @@ app.get("/", (req, res, next) => {
 });
 
 app.get("/api/user", (req, res, next) => {
-  console.log('hello')
   const sql = "select * from UserData";
   const params = [];
   db.all(sql, params, (err, rows) => {
