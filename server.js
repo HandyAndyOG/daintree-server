@@ -38,10 +38,9 @@ app.use(bodyParser.json());
 //   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 //   next();
 // });
-const HTTP_PORT = 8000;
 
-app.listen(HTTP_PORT, () => {
-  console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT));
+app.listen(process.env.HTTP_PORT, () => {
+  console.log("Server running on port %PORT%".replace("%PORT%", process.env.HTTP_PORT));
 });
 
 app.get("/", (req, res, next) => {
