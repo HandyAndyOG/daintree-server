@@ -4,18 +4,21 @@ import db from "./database.js";
 import md5 from "md5";
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
+import cors from 'cors'
 dotenv.config();
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-app.use(function (_, res, next) {
-  res.header("Access-Control-Allow-Origin", `${process.env.FRONT_URL}`);
-  res.header("Access-Control-Allow-Methods", "POST, GET, DELETE, PATCH");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
+app.use(cors({
+  origin: `${process.env.FRONT_URL}`
+}))
+// app.use(function (_, res, next) {
+//   res.header("Access-Control-Allow-Origin", `${process.env.FRONT_URL}`);
+//   res.header("Access-Control-Allow-Methods", "POST, GET, DELETE, PATCH");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   next();
+// });
 const HTTP_PORT = 8000;
 
 app.listen(HTTP_PORT, () => {
