@@ -42,6 +42,7 @@ app.get("/api/user", (req, res, next) => {
 app.get("/api/user/:id", (req, res, next) => {
   const sql = "select * from UserData where id = ?";
   const params = [req.params.id];
+  console.log(params)
   db.get(sql, params, (err, row) => {
     if (err) {
       res.status(400).json({ error: err.message });
