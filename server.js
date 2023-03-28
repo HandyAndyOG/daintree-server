@@ -202,9 +202,12 @@ app.post("/api/user/", (req, res, next) => {
   });
 });
 
-app.get("/api/product", (req, res, next) => {
-  const sql = "select * from ProductData";
-  const params = [];
+app.get("/api/product/page/:page", (req, res, next) => {
+  const page_number = req.params.page;
+  const per_page = 10;
+  const offset = (page_number - 1) * per_page;
+  const sql = "SELECT * FROM ProductData LIMIT ? OFFSET ?";
+  const params = [per_page, offset];
   db.all(sql, params, (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });
