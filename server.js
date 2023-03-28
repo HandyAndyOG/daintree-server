@@ -43,7 +43,7 @@ app.listen(process.env.HTTP_PORT, () => {
   console.log("Server running on port %PORT%".replace("%PORT%", process.env.HTTP_PORT));
 });
 
-app.get("/api", (req, res, next) => {
+app.get("/api", (_, res) => {
   res.status(200).send('Server running');
 });
 
@@ -52,7 +52,7 @@ app.get("/api/user", (req, res, next) => {
   const params = [];
   db.all(sql, params, (err, rows) => {
     if (err) {
-      res.status(400).json({ error: err.message });
+      res.status(400).send('wtf');
       return;
     }
     res.json({
@@ -65,7 +65,6 @@ app.get("/api/user", (req, res, next) => {
 app.get("/api/user/:id", (req, res, next) => {
   const sql = "select * from UserData where id = ?";
   const params = [req.params.id];
-  console.log(params);
   db.get(sql, params, (err, row) => {
     if (err) {
       res.status(400).json({ error: err.message });
