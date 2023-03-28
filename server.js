@@ -4,6 +4,7 @@ import md5 from "md5";
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import cors from 'cors'
+import zlib from 'zlib'
 
 dotenv.config();
 
@@ -202,6 +203,23 @@ app.post("/api/user/", (req, res, next) => {
   });
 });
 
+// app.get("/api/product/page/:page", (req, res, next) => {
+//   const page_number = req.params.page;
+//   const per_page = 10;
+//   const offset = (page_number - 1) * per_page;
+//   const sql = "SELECT * FROM ProductData LIMIT ? OFFSET ?";
+//   const params = [per_page, offset];
+//   db.all(sql, params, (err, rows) => {
+//     if (err) {
+//       res.status(400).json({ error: err.message });
+//       return;
+//     }
+//     res.json({
+//       message: "success",
+//       data: rows,
+//     });
+//   });
+// });
 app.get("/api/product/page/:page", (req, res, next) => {
   const page_number = req.params.page;
   const per_page = 10;
@@ -213,9 +231,24 @@ app.get("/api/product/page/:page", (req, res, next) => {
       res.status(400).json({ error: err.message });
       return;
     }
-    res.json({
+
+    const json = {
       message: "success",
       data: rows,
+    };
+    const payload = JSON.stringify(json);
+
+    zlib.gzip(payload, (err, compressed) => {
+      if (err) {
+        res.status(500).send(err);
+        return;
+      }
+
+      res.writeHead(200, {
+        'Content-Encoding': 'gzip',
+        'Content-Type': 'application/json',
+      });
+      res.end(compressed);
     });
   });
 });
