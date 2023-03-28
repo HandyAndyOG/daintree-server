@@ -15,14 +15,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors())
 app.use('/api', (req, res) => {
-  const proxy = https.request('https://daintree-production.up.railway.app', {
+  const proxy = https.request('https://daintree-server-production.up.railway.app/', {
     ...req,
     headers: {
       ...req.headers,
-      host: 'daintree-production.up.railway.app'
+      host: 'https://daintree-server-production.up.railway.app/'
     }
   }, (response) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://silver-macaron-ef4571.netlify.app');
+    res.setHeader('Access-Control-Allow-Origin', 'https://daintree-production.up.railway.app/');
     response.pipe(res);
   });
   req.pipe(proxy);
