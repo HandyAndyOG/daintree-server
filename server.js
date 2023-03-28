@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-// app.use(cors())
+app.use(cors())
 // app.use('/api', (req, res) => {
 //   const proxy = https.request('https://daintree-server-production.up.railway.app/', {
 //     ...req,
@@ -44,7 +44,7 @@ app.listen(process.env.HTTP_PORT, () => {
 });
 
 app.get("/", (req, res, next) => {
-  res.json({ message: "Ok" });
+  res.send({ message: "Ok" });
 });
 
 app.get("/api/user", (req, res, next) => {
