@@ -5,14 +5,17 @@ import md5 from "md5";
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import cors from 'cors'
+import { createProxyMiddleware } from 'http-proxy-middleware';
 dotenv.config();
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors({
-  origin: `${process.env.FRONT_URL}`
-}))
+app.use(cors())
+app.use('/api', createProxyMiddleware({
+  target: 'https://daintree-production.up.railway.app',
+  changeOrigin: true,
+}));
 // app.use(function (_, res, next) {
 //   res.header("Access-Control-Allow-Origin", `${process.env.FRONT_URL}`);
 //   res.header("Access-Control-Allow-Methods", "POST, GET, DELETE, PATCH");
