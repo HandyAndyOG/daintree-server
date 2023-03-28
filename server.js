@@ -3,17 +3,19 @@ import express from "express";
 import db from "./database.js";
 import md5 from "md5";
 import bodyParser from "body-parser";
-import * as dotenv from 'dotenv'
-dotenv.config()
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(function(_, res, next) {
-    res.header("Access-Control-Allow-Origin", `${process.env.FRONT_URL}`);
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    next();
-  });
+
+app.use(function (_, res, next) {
+  res.header("Access-Control-Allow-Origin", `${process.env.FRONT_URL}`);
+  res.header("Access-Control-Allow-Methods", "POST, GET, DELETE, PATCH");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
 const HTTP_PORT = 8000;
 
 app.listen(HTTP_PORT, () => {
@@ -42,7 +44,7 @@ app.get("/api/user", (req, res, next) => {
 app.get("/api/user/:id", (req, res, next) => {
   const sql = "select * from UserData where id = ?";
   const params = [req.params.id];
-  console.log(params)
+  console.log(params);
   db.get(sql, params, (err, row) => {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -101,37 +103,36 @@ app.post("/api/cart/:id", (req, res, next) => {
 });
 
 app.delete("/api/cart/:id", (req, res, next) => {
-    const cartId = req.params.id;
-    const itemId = req.body.id;
-    db.get("SELECT items FROM CartData WHERE id = ?", [cartId], (err, result) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      let items = JSON.parse(result.items);
-      const index = items.findIndex((item) => item.id === itemId);
-  
-      if (index === -1) {
-        res.status(404).json({ error: "Item not found" });
-        return;
-      }
-      items.splice(index, 1);
-      const newItems = JSON.stringify(items);
-      db.run(
-        "UPDATE CartData SET items = ? WHERE id = ?",
-        [newItems, cartId],
-        function (err, result) {
-          if (err) {
-            res.status(400).json({ error: err.message });
-            return;
-          }
-  
-          res.json({ message: "deleted", changes: this.changes });
+  const cartId = req.params.id;
+  const itemId = req.body.id;
+  db.get("SELECT items FROM CartData WHERE id = ?", [cartId], (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    let items = JSON.parse(result.items);
+    const index = items.findIndex((item) => item.id === itemId);
+
+    if (index === -1) {
+      res.status(404).json({ error: "Item not found" });
+      return;
+    }
+    items.splice(index, 1);
+    const newItems = JSON.stringify(items);
+    db.run(
+      "UPDATE CartData SET items = ? WHERE id = ?",
+      [newItems, cartId],
+      function (err, result) {
+        if (err) {
+          res.status(400).json({ error: err.message });
+          return;
         }
-      );
-    });
+
+        res.json({ message: "deleted", changes: this.changes });
+      }
+    );
   });
-  
+});
 
 app.patch("/api/user/:id", (req, res, next) => {
   const data = {
