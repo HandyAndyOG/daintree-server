@@ -13,20 +13,20 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors())
-app.use('/api', (req, res) => {
-  const proxy = https.request('https://daintree-server-production.up.railway.app/', {
-    ...req,
-    headers: {
-      ...req.headers,
-      host: 'https://daintree-server-production.up.railway.app/'
-    }
-  }, (response) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://daintree-production.up.railway.app/');
-    response.pipe(res);
-  });
-  req.pipe(proxy);
-});
+// app.use(cors())
+// app.use('/api', (req, res) => {
+//   const proxy = https.request('https://daintree-server-production.up.railway.app/', {
+//     ...req,
+//     headers: {
+//       ...req.headers,
+//       host: 'https://daintree-server-production.up.railway.app/'
+//     }
+//   }, (response) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'https://daintree-production.up.railway.app/');
+//     response.pipe(res);
+//   });
+//   req.pipe(proxy);
+// });
 
 // app.use('/api', createProxyMiddleware({
 //   target: 'https://daintree-production.up.railway.app',
