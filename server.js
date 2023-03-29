@@ -6,6 +6,7 @@ import * as dotenv from "dotenv";
 import cors from 'cors'
 import zlib from 'zlib'
 
+
 dotenv.config();
 
 const app = express();
@@ -220,6 +221,7 @@ app.post("/api/user/", (req, res, next) => {
 //     });
 //   });
 // });
+
 app.get("/api/product/page/:page", (req, res, next) => {
   const page_number = req.params.page;
   const per_page = 10;
@@ -231,25 +233,12 @@ app.get("/api/product/page/:page", (req, res, next) => {
       res.status(400).json({ error: err.message });
       return;
     }
-
-    const json = {
-      message: "success",
-      data: rows,
-    };
-    const payload = JSON.stringify(json);
-
-    zlib.gzip(payload, (err, compressed) => {
-      if (err) {
-        res.status(500).send(err);
-        return;
-      }
-
-      res.writeHead(200, {
-        'Content-Encoding': 'gzip',
-        'Content-Type': 'application/json',
-      });
-      res.end(compressed);
+    const compressedData = zlib.deflateSync(JSON.stringify(rows));
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Content-Encoding': 'deflate'
     });
+    res.end(compressedData);
   });
 });
 
