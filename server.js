@@ -75,7 +75,6 @@ app.post("/api/cart/:id", (req, res, next) => {
       res.status(400).json({ error: err.message });
       return;
     }
-
     const items = JSON.parse(result.items);
     items.push(newItem);
     const data = JSON.stringify(items);
@@ -204,24 +203,6 @@ app.post("/api/user/", (req, res, next) => {
   });
 });
 
-// app.get("/api/product/page/:page", (req, res, next) => {
-//   const page_number = req.params.page;
-//   const per_page = 10;
-//   const offset = (page_number - 1) * per_page;
-//   const sql = "SELECT * FROM ProductData LIMIT ? OFFSET ?";
-//   const params = [per_page, offset];
-//   db.all(sql, params, (err, rows) => {
-//     if (err) {
-//       res.status(400).json({ error: err.message });
-//       return;
-//     }
-//     res.json({
-//       message: "success",
-//       data: rows,
-//     });
-//   });
-// });
-
 app.get("/api/product/page/:page", (req, res, next) => {
   const page_number = req.params.page;
   const per_page = 10;
@@ -277,6 +258,7 @@ app.post("/api/product/:id", (req, res, next) => {
   }
   const data = {
     title: req.body.title,
+    imageUrl: "https://picsum.photos/400",
     quantity: req.body.quantity,
     price: req.body.price,
     category: req.body.category,
@@ -284,13 +266,14 @@ app.post("/api/product/:id", (req, res, next) => {
   };
   const params = [
     data.title,
+    data.imageUrl,
     data.quantity,
     data.price,
     data.category,
     data.uniqueStoreId,
   ];
   const sql =
-    "INSERT INTO ProductData (title, quantity, price, category, uniqueStoreId) VALUES (?,?,?,?,?)";
+    "INSERT INTO ProductData (title, imageUrl, quantity, price, category, uniqueStoreId) VALUES (?,?,?,?,?,?)";
   db.run(sql, params, function (err, result) {
     if (err) {
       res.status(400).json({ error: err.message });
